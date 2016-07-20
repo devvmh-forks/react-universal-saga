@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import Express from 'express';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';

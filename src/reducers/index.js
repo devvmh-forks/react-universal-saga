@@ -2,6 +2,7 @@ import * as ActionTypes from '../actions';
 import _ from 'lodash';
 import paginate from './paginate';
 import { combineReducers } from 'redux';
+import { crudReducer } from 'redux-crud-store';
 
 // Updates an entity cache in response to any action with response.entities.
 function entities(state = { users: {}, repos: {} }, action) {
@@ -55,6 +56,7 @@ function router(state = { pathname: '/' }, action) {
 }
 
 const rootReducer = combineReducers({
+  models: crudReducer,
   entities,
   pagination,
   errorMessage,

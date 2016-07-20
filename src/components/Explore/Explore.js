@@ -1,56 +1,68 @@
 import React, { Component, PropTypes } from 'react';
-import { Button } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { fetchCities } from '../../modules/cities';
+import { select } from 'redux-crud-store';
+import { fromJS } from 'immutable';
 
-const GITHUB_REPO = 'https://github.com/xkawi/react-universal-saga';
-
-export default class Explore extends Component {
-  constructor(props) {
-    super(props);
-    this.handleKeyUp = this.handleKeyUp.bind(this);
-    this.handleGoClick = this.handleGoClick.bind(this);
+class Landingpage extends Component {
+  componentWillMount() {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.value !== this.props.value) {
-      this.setInputValue(nextProps.value);
+    const { cities } = nextProps;
+    const { dispatch } = this.props;
+    if (cities.needsFetch) {
+      dispatch(cities.fetch);
     }
-  }
-
-  getInputValue() {
-    return this.refs.input.value;
-  }
-
-  setInputValue(val) {
-    // Generally mutating DOM is a bad idea in React components,
-    // but doing this for a single uncontrolled field is less fuss
-    // than making it controlled and maintaining a state for it.
-    this.refs.input.value = val;
-  }
-
-  handleKeyUp(e) {
-    if (e.keyCode === 13) {
-      this.handleGoClick();
-    }
-  }
-
-  handleGoClick() {
-    this.props.onChange(this.getInputValue());
   }
 
   render() {
+    const { cities } = this.props;
     return (
       <div>
-        <p>Type a username or repo full name and hit 'Go': </p>
-        <input size="45" ref="input" defaultValue={this.props.value} onKeyUp={this.handleKeyUp} />
-        <Button bsStyle="primary" onClick={this.handleGoClick}>Go!</Button>
-        <p>Code on <a href={GITHUB_REPO} target="_blank">Github</a>.</p>
-        <p>Move the DevTools with Ctrl+W or hide them with Ctrl+H.</p>
+        <section
+          className={
+              'hero hero-position-bottom hero-spacing'
+          }
+        >
+          <div className="container">
+            <h1 className="h-font text-primary">XXX</h1>
+            <h2 className="h-font">XXX</h2>
+
+            <div className={'styles'}>
+              <div className={'styles'}>
+                <select className="c-select">
+                  <option value="">Choose your city</option>
+                    {cities.data.map((city) => (
+                      <option key={city.slug} value={city.slug}>{city.name}</option>
+                    ))}
+                </select>
+              </div>
+              <div className={'styles'}>
+                <button type="submit" className="btn btn-primary btn-lg">
+                  Discover
+                </button>
+              </div>
+              <div className={'styles'}>
+                <a href="#" className="btn btn-primary-outline btn-lg">
+                  Free Sign Up
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     );
   }
 }
 
-Explore.propTypes = {
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired
+Landingpage.propTypes = {
+  cities: PropTypes.object,
+  dispatch: PropTypes.func
 };
+
+function mapStateToProps(state) {
+  return { cities: select(fetchCities(), fromJS(state.models)) };
+}
+
+export default connect(mapStateToProps)(Landingpage);

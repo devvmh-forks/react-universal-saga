@@ -1,3 +1,6 @@
+import {
+    fetchCollection, fetchRecord, createRecord, updateRecord, deleteRecord
+} from 'redux-crud-store';
 
 const REQUEST = 'REQUEST';
 const SUCCESS = 'SUCCESS';
@@ -65,3 +68,26 @@ export const loadMoreStarred = (login) => action(LOAD_MORE_STARRED, { login });
 export const loadMoreStargazers = (fullName) => action(LOAD_MORE_STARGAZERS, { fullName });
 
 export const resetErrorMessage = () => action(RESET_ERROR_MESSAGE);
+
+const MODEL = 'cities';
+const PATH = '/cities';
+
+export function fetchCities(params = {}) {
+  return fetchCollection(MODEL, PATH, params);
+}
+
+export function fetchCity(id, params = {}) {
+  return fetchRecord(MODEL, id, `${PATH}/${id}`, params);
+}
+
+export function createCity(data = {}) {
+  return createRecord(MODEL, PATH, data);
+}
+
+export function updateCity(id, data = {}) {
+  return updateRecord(MODEL, id, `${PATH}/${id}`, data);
+}
+
+export function deleteCity(id) {
+  return deleteRecord(MODEL, id, `${PATH}/${id}`);
+}

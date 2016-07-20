@@ -4,8 +4,12 @@ import createSagaMiddleware, { END } from 'redux-saga';
 import { DevTools } from 'containers';
 import rootReducer from '../reducers';
 
+import { crudSaga, ApiClient } from 'redux-crud-store';
+
 export default function configureStore(history, initialState) {
   const sagaMiddleware = createSagaMiddleware();
+  const client = new ApiClient({ basePath: 'http://github.com/api/v3/' });
+  const crudMiddleware = createSagaMiddleware();
 
   const store = createStore(
     rootReducer,
@@ -13,6 +17,7 @@ export default function configureStore(history, initialState) {
     compose(
       applyMiddleware(
         sagaMiddleware,
+        crudMiddleware,
         createLogger()
       ),
       DevTools.instrument()
@@ -29,6 +34,7 @@ export default function configureStore(history, initialState) {
   }
 
   store.runSaga = sagaMiddleware.run;
+  store.crudSaga = crudSaga(client);
   store.close = () => store.dispatch(END);
   return store;
 }

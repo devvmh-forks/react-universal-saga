@@ -9,13 +9,19 @@ import getRoutes from './routes';
 import { history } from './services';
 import configureStore from './store/configureStore';
 import config from './config';
+import { fork } from 'redux-saga/effects';
 
 const dest = document.getElementById('content');
 const store = configureStore(history, window.__data); // eslint-disable-line
 
 GoogleAnalytics.initialize(config.app.googleAnalytics.appId);
 
-store.runSaga(rootSaga);
+store.runSaga(function* mainFork() {
+  yield [
+    fork(rootSaga),
+    fork(store.crudSaga)
+  ];
+});
 
 render(
   <Root
